@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lego Block Method - Daby</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #141414;
+            color: #ffffff;
+            line-height: 2.0; /* Double line spacing */
+        }
+        
+        .section-container {
+            padding: 4rem 1rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Netflix-style highlights */
+        .highlight-on-hover {
+            position: relative;
+            z-index: 10;
+        }
+
+        .highlight-on-hover::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            border-radius: 8px;
+            background: rgba(229, 9, 20, 0);
+            transition: background 0.3s ease;
+            box-shadow: 0 0 0px 0px rgba(255, 199, 0, 0);
+            z-index: -1;
+        }
+
+        .highlight-on-hover:hover::after {
+            background: rgba(229, 9, 20, 0.2);
+            box-shadow: 0 0 20px 5px rgba(255, 199, 0, 0.5);
+        }
+
+        /* App Title Branding - Golden Glow Effect */
+        @keyframes golden-glow {
+            0% {
+                text-shadow: 0 0 5px #ffc700;
+            }
+            50% {
+                text-shadow: 0 0 20px #ffc700, 0 0 30px #ffc700, 0 0 40px #ffc700;
+            }
+            100% {
+                text-shadow: 0 0 5px #ffc700;
+            }
+        }
+
+        .app-title {
+            font-size: 4rem; /* Reduced font size here */
+            font-weight: 700;
+            letter-spacing: -0.05em;
+            text-shadow: 0 0 5px #ffc700;
+            transition: all 0.5s ease;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .app-title:hover {
+            color: #E50914;
+            animation: golden-glow 2s infinite;
+        }
+
+        /* Play button */
+        .play-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #E50914;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .play-button:hover {
+            background-color: #ffc700;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #fff;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .block-container {
+            border-left: 5px solid #E50914;
+            padding-left: 1.5rem;
+            margin-bottom: 2rem;
+            line-height: 2.0;
+        }
+        
+        /* New custom styles for the reporting section to improve readability */
+        .report-section .duty-item {
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+        
+        .report-section .example-line {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .report-section .explanation {
+            margin-top: 0.5rem;
+            margin-left: 48px; /* Align with the text after the button */
+        }
+
+        /* Specific Highlighted Block */
+        .highlighted-block {
+            background-color: rgba(229, 9, 20, 0.1);
+            border: 2px solid rgba(229, 9, 20, 0.5);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+            line-height: 2.0;
+        }
+        
+        /* New custom class for a and an highlighting */
+        .article-highlight {
+            font-weight: bold;
+            font-style: italic;
+            color: #ffc700;
+        }
+        
+        /* New animation for "on a team" */
+        .animated-phrase {
+            animation: pulse-highlight 2s infinite;
+            display: inline-block;
+        }
+        
+        @keyframes pulse-highlight {
+            0% {
+                color: inherit;
+                text-shadow: none;
+            }
+            50% {
+                color: #ffc700;
+                text-shadow: 0 0 8px #ffc700, 0 0 16px #ffc700;
+            }
+            100% {
+                color: inherit;
+                text-shadow: none;
+            }
+        }
+        
+        .work-list li {
+            margin-bottom: 1rem;
+        }
+        .work-list .play-button {
+            margin-right: 1rem;
+        }
+
+        /* New class for a new block with a different style */
+        .info-block {
+            background-color: rgba(255, 199, 0, 0.1);
+            border: 2px solid rgba(255, 199, 0, 0.5);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+            line-height: 2.0;
+        }
+
+        .info-block h3 {
+            color: #ffc700;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .info-block .play-button {
+            background-color: #ffc700;
+            color: #141414;
+        }
+        .info-block .play-button:hover {
+            background-color: #E50914;
+        }
+    </style>
+</head>
+<body class="bg-[#141414] text-white">
+
+    <!-- Title section, now with reduced spacing -->
+    <div class="pt-10 pb-10 flex flex-col justify-start items-center">
+        <h1 class="app-title text-white">Lego Block Method - Daby</h1>
+        <p class="text-xl mt-4 text-center">Your professional English hub</p>
+    </div>
+
+    <main class="section-container">
+        
+        <div class="highlighted-block">
+            <h2 class="text-3xl font-bold mb-4 text-[#E50914]">Welcome to Your English Hub!</h2>
+            <p class="text-lg">
+                👉 My goal is to help you master business English using a simple, effective method. <br>
+                👉 We will use a "Lego-block" approach, breaking down sentences into small, manageable pieces. <br>
+                👉 This helps you build confidence and speak naturally in professional settings. <br>
+                You'll find all the key phrases here, complete with playable audio so you can hear the correct pronunciation.
+            </p>
+        </div>
+
+        <section class="mt-20">
+            <h2 class="text-3xl font-bold mb-8">English Block Bank: Essential Phrases</h2>
+            
+            <!-- 1. Identity: "Who I Am" -->
+            <div class="highlight-on-hover p-4 rounded-lg mb-8">
+                <h3 class="text-2xl font-semibold mb-4 text-[#ffc700]">1. Identity: "Who I Am"</h3>
+                <div class="block-container">
+                    <p>
+                        <span class="inline-flex items-center space-x-2">
+                            <span class="play-button" onclick="playAudio('I', this)"><i class="fas fa-play"></i></span>
+                            <span class="text-sm">I</span> = Eu
+                        </span><br>
+                        <span class="inline-flex items-center space-x-2">
+                            <span class="play-button" onclick="playAudio('I am', this)"><i class="fas fa-play"></i></span>
+                            <span class="text-sm">I am</span> = Eu sou
+                        </span><br>
+                        <span class="inline-flex items-center space-x-2">
+                            <span class="play-button" onclick="playAudio('I am', this)"><i class="fas fa-play"></i></span>
+                            <span class="text-sm">I am</span> = Eu estou
+                        </span><br>
+                        <hr class="border-gray-700 my-4">
+                        <span class="text-sm block">
+                           **Observation:** In English, we don't have separate verbs for "ser" and "estar." Both meanings are covered by the verb "**to be**." The context of the sentence clarifies whether you mean "I am a person" (permanent state) or "I am happy" (temporary state).
+                        </span>
+                        <span class="text-sm block">
+                           (Em inglês, não há verbos separados para "ser" e "estar".)
+                        </span>
+                        <hr class="border-gray-700 my-4">
+                        <span class="text-sm block text-[#ffc700] font-bold">
+                           Como eu falo sobre a minha profissão/cargo:
+                        </span>
+                         <!-- New content added here -->
+                        <span class="text-sm block text-gray-400 font-bold mt-4 mb-2">
+                            Como perguntar sobre a profissão de alguém:
+                        </span>
+                        <div class="pl-4">
+                            <span class="inline-flex items-center space-x-2">
+                                <span class="play-button" onclick="playAudio('What do you do?', this)"><i class="fas fa-play"></i></span>
+                                <span class="text-sm">What do you do?</span>
+                            </span>
+                            <span class="text-xs text-gray-500 block">
+                                (O mais educado e comum em ambientes profissionais.)
+                            </span>
+                        </div>
+                        <div class="pl-4 mt-2 mb-4">
+                            <span class="text-sm">Outras opções:</span>
+                            <ul class="list-disc list-inside text-sm text-gray-400">
+                                <li>What is your job?</li>
+                                <li>What is your position?</li>
+                            </ul>
+                            <span class="text-xs text-gray-500 block">
+                                (Todos são a mesma pergunta para pedir sobre seu cargo, mas "What do you do?" é a opção preferida.)
+                            </span>
+                        </div>
+                        <span class="inline-flex items-center space-x-2">
+                            <span class="play-button" onclick="playAudio('I am a manager', this)"><i class="fas fa-play"></i></span>
+                            <span class="text-sm">I am a manager</span> = Eu sou gerente
+                        </span><br>
+                         <span class="text-sm block ml-10">
+                            **Observation:** Before a singular profession, use the indefinite article <span class="article-highlight">"**a**"</span> or <span class="article-highlight">"**an**"</span>. For example, "a manager" or "an engineer."
+                        </span>
+                        <span class="text-sm block ml-10">
+                            (Antes de uma profissão singular, use o artigo indefinido <span class="article-highlight">"a"</span> ou <span class="article-highlight">"an"</span>.)
+                        </span><br>
+                        <span class="text-sm block ml-10 mt-2 p-2 rounded-lg bg-yellow-900 bg-opacity-30 border border-yellow-700">
+                            ⭐ **Dica de gramática:** Use **"a"** antes de palavras que começam com um som de consoante (ex: a manager, a doctor). Use **"an"** antes de palavras que começam com um som de vogal (ex: an engineer, an accountant). O som é o mais importante!
+                        </span>
+                        
+                        <!-- Exercise: Job Title -->
+                        <div class="exercise-block mt-4">
+                            <label for="job-title-exercise">Exercício: "Eu sou diretor de vendas."</label>
+                            <p class="text-sm text-gray-400">Traduza a frase acima para o inglês.</p>
+                            <input type="text" id="job-title-exercise" placeholder="Sua resposta...">
+                            <button onclick="checkAnswer(event, 'job-title-exercise', 'I am a sales director', ['I am a sales director.'])">Verificar Resposta</button>
+                            <p class="feedback-message mt-2" id="job-title-feedback"></p>
+                        </div>
+                        
+                        <span class="text-sm block text-[#ffc700] font-bold">
+                           Como eu falo onde eu trabalho:
+                        </span>
+                        <span class="inline-flex items-center space-x-2">
+                            <span class="play-button" onclick="playAudio('I work at', this)"><i class="fas fa-play"></i></span>
+                            <span class="text-sm">I work at</span> = Eu trabalho em/na
+                        </span>
+                        <span class="text-sm block ml-10">
+                            **(Por que "at"?)** Para um ponto ou local específico, como a empresa em que trabalha.
+                        </span>
+                        <br>
+                         <!-- Exercise: Company -->
+                        <div class="exercise-block mt-4">
+                            <label for="company-exercise">Exercício: "Eu trabalho na Microsoft."</label>
+                            <p class="text-sm text-gray-400">Traduza a frase acima para o inglês.</p>
+                            <input type="text" id="company-exercise" placeholder="Sua resposta...">
+                            <button onclick="checkAnswer(event, 'company-exercise', 'I work at Microsoft', ['I work at microsoft', 'I work at Microsoft.'])">Verificar Resposta</button>
+                            <p class="feedback-message mt-2" id="company-feedback"></p>
+                        </div>
+                        
+                        <span class="text-sm block text-[#ffc700] font-bold">
+                           Como eu falo a área/departamento que eu trabalho:
+                        </span>
+                        <span class="inline-flex items-center space-x-2">
+                            <span class="play-button" onclick="playAudio('I work in', this)"><i class="fas fa-play"></i></span>
+                            <span class="text-sm">I work in</span> = Eu trabalho em/na
+                        </span>
+                        <span class="text-sm block ml-10">
+                            **(Por que "in"?)** Para áreas e departamentos específicos.
+                        </span>
+                        <div class="text-sm block ml-10">
+                            Exemplos:
+                            <div class="example-line">
+                                <span class="inline-flex items-center space-x-2">
+                                    <span class="play-button" onclick="playAudio('I work in Human Resources', this)"><i class="fas fa-play"></i></span>
+                                    <span class="text-sm">I work in Human Resources.</span> (Eu trabalho em recursos humanos.)
+                                </span>
+                            </div>
+                            <div class="example-line">
+                                <span class="inline-flex items-center space-x-2">
+                                    <span class="play-button" onclick="playAudio('He works in software development', this)"><i class="fas fa-play"></i></span>
+                                    <span class="text-sm">He works in software development.</span> (Ele trabalha em desenvolvimento de software.)
+                                </span>
+                            </div>
+                            <div class="example-line">
+                                <span class="inline-flex items-center space-x-2">
+                                    <span class="play-button" onclick="playAudio('We work in marketing', this)"><i class="fas fa-play"></i></span>
+                                    <span class="text-sm">We work in marketing.</span> (Nós trabalhamos em marketing.)
+                                </span>
+                            </div>
+                            <div class="example-line">
+                                <span class="inline-flex items-center space-x-2">
+                                    <span class="play-button" onclick="playAudio('She works in finance', this)"><i class="fas fa-play"></i></span>
+                                    <span class="text-sm">She works in finance.</span> (Ela trabalha em finanças.)
+                                </span>
+                            </div>
+                            <div class="example-line">
+                                <span class="inline-flex items-center space-x-2">
+                                    <span class="play-button" onclick="playAudio('I work in sales or quality', this)"><i class="fas fa-play"></i></span>
+                                    <span class="text-sm">I work in sales / quality.</span> (Eu trabalho na área de vendas / qualidade)
+                                </span>
+                            </div>
+                        </div>
+                        <span class="text-sm block text-[#ffc700] font-bold">
+                           Trabalhar em um time:
+                        </span>
+                        <div class="example-line">
+                            <span class="inline-flex items-center space-x-2">
+                                <span class="play-button" onclick="playAudio('I work on a team of 10 staff.', this)"><i class="fas fa-play"></i></span>
+                                <span class="text-sm">I work <span class="animated-phrase">on a team</span> of 10 staff.</span> (Eu trabalho em uma equipe de 10 funcionários.)
+                            </span>
+                        </div>
+                        <span class="text-sm block ml-10">
+                            **(Por que "on"?)** A preposição **"on"** é usada para se referir a fazer parte de um grupo ou comitê, como uma equipe ou um projeto. Ela indica que você está participando ou trabalhando "sobre" um conjunto de pessoas ou uma iniciativa.
+                        </span>
+                        <span class="text-sm block ml-10 mt-2">
+                            **Explanation:** In a professional environment, it's more specific to use **"staff"** instead of "people" when referring to a group of colleagues or employees. While "people" isn't wrong, "staff" is a more formal and precise term in a business context.
+                        </span>
+                        <span class="text-sm block ml-10">
+                            **(Explicação):** Em inglês, é mais específico usar **"staff"** em vez de "people" ao se referir a um grupo de colegas ou funcionários. Embora "people" não esteja errado, "staff" é um termo mais formal e preciso no contexto de negócios.
+                        </span>
+                        
+                         <!-- Exercise: Department -->
+                        <div class="exercise-block mt-4">
+                            <label for="department-exercise">Exercício: "Ele trabalha em vendas."</label>
+                            <p class="text-sm text-gray-400">Traduza a frase acima para o inglês. (Dica: Vendas = Sales)</p>
+                            <input type="text" id="department-exercise" placeholder="Sua resposta...">
+                            <button onclick="checkAnswer(event, 'department-exercise', 'He works in Sales', ['He works in sales.'])">Verificar Resposta</button>
+                            <p class="feedback-message mt-2" id="department-feedback"></p>
+                        </div>
+                        
+                        <span class="text-sm block text-[#ffc700] font-bold">
+                           Como eu falo para quem eu reporto:
+                        </span>
+                        <div class="report-section text-sm block">
+                            <div class="duty-item">
+                                <div class="example-line">
+                                    <span class="play-button" onclick="playAudio('I report to Jane Doe.', this)"><i class="fas fa-play"></i></span>
+                                    <div class="ml-2">
+                                        <div class="text-sm">I report to Jane Doe.</div>
+                                        <div class="text-sm text-gray-400">(Eu me reporto a Jane Doe.)</div>
+                                    </div>
+                                </div>
+                                <div class="explanation">
+                                    <p>**Explanation:** In English, "I report to..." is the standard and professional way to state who your direct supervisor is. It means you are accountable to this person and they manage your work.</p>
+                                    <p class="text-gray-400">**(Explicação):** Em inglês, "I report to..." é a maneira padrão e profissional de dizer quem é seu supervisor direto. Isso significa que você é responsável perante essa pessoa e ela gerencia seu trabalho.</p>
+                                </div>
+                            </div>
+                            <div class="duty-item">
+                                <div class="example-line">
+                                    <span class="play-button" onclick="playAudio('I report to two bosses.', this)"><i class="fas fa-play"></i></span>
+                                    <div class="ml-2">
+                                        <div class="text-sm">I report to two bosses.</div>
+                                        <div class="text-sm text-gray-400">(Eu me reporto a dois chefes.)</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="duty-item">
+                                <div class="example-line">
+                                    <span class="play-button" onclick="playAudio('I report to my local boss, Jane, and an overseas boss.', this)"><i class="fas fa-play"></i></span>
+                                    <div class="ml-2">
+                                        <div class="text-sm">I report to my local boss, Jane, and an overseas boss.</div>
+                                        <div class="text-sm text-gray-400">(Eu me reporto à minha chefe local, Jane, e a um chefe no exterior.)</div>
+                                    </div>
+                                </div>
+                            </div>
+                             <div class="duty-item">
+                                <span class="play-button" onclick="playAudio('I report to my local boss, Jane, and to an American boss.', this)"><i class="fas fa-play"></i></span>
+                                <div class="ml-2">
+                                    <div class="text-sm">I report to my local boss, Jane, and to an American boss.</div>
+                                    <div class="text-sm text-gray-400">(Eu me reporto à minha chefe local, Jane, e a um chefe americano.)</div>
+                                </div>
+                            </div>
+                            <div class="explanation">
+                                <p>**Explanation:** You can use "local" to specify a boss in your country and "overseas" for one in another country. You can also replace "overseas" with their nationality, such as "my Japanese boss."</p>
+                                <p class="text-gray-400">**(Explicação):** Você pode usar "local" para se referir a um chefe no seu país e "overseas" para um em outro país. Você também pode substituir "overseas" pela nacionalidade, como "my Japanese boss."</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Exercise: Reporting -->
+                        <div class="exercise-block mt-4">
+                            <label for="reporting-exercise">Exercício: "Eu tenho um chefe no Brasil e reporto ao CFO na França."</label>
+                            <p class="text-sm text-gray-400">Traduza a frase acima para o inglês.</p>
+                            <input type="text" id="reporting-exercise" placeholder="Sua resposta...">
+                            <button onclick="checkAnswer(event, 'reporting-exercise', 'I have a boss in Brazil and report to the CFO in France', ['I have a boss in Brazil and report to the CFO in France.'])">Verificar Resposta</button>
+                            <p class="feedback-message mt-2" id="reporting-feedback"></p>
+                        </div>
+                        
+                        <div class="text-sm block ml-10 mt-2 p-2 rounded-lg bg-red-900 bg-opacity-30 border border-red-700">
+                            ⚠️ **Atenção:** Profissões que causam confusão para brasileiros:
+                            <ul>
+                                <li>
+                                    <span class="inline-flex items-center space-x-2">
+                                        <span class="play-button" onclick="playAudio('I am an engineer', this)"><i class="fas fa-play"></i></span>
+                                        <span class="text-sm">I am **an** engineer</span>
+                                    </span>
+                                </li>
+                                <li>
+                                    <span class="inline-flex items-center space-x-2">
+                                        <span class="play-button" onclick="playAudio('I am an analyst', this)"><i class="fas fa-play"></i></span>
+                                        <span class="text-sm">I am **an** analyst</span>
+                                    </span>
+                                </li>
+                                <li>
+                                    <span class="inline-flex items-center space-x-2">
+                                        <span class="play-button" onclick="playAudio('I work in customer service', this)"><i class="fas fa-play"></i></span>
+                                        <span class="text-sm">I work in customer service</span>
+                                    </span>
+                                </li>
+                                <li>
+                                    <span class="inline-flex items-center space-x-2">
+                                        <span class="play-button" onclick="playAudio('I work in sales', this)"><i class="fas fa-play"></i></span>
+                                        <span class="text-sm">I work in sales</span>
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <!-- New info block for "work from home" -->
+                        <div class="info-block">
+                            <h3 class="text-2xl font-semibold mb-4 text-[#ffc700]">Como dizer que você trabalha de casa</h3>
+                            <p>
+                                <span class="inline-flex items-center space-x-2">
+                                    <span class="play-button" onclick="playAudio('I work from home today', this)"><i class="fas fa-play"></i></span>
+                                    <span class="text-sm">I work from home today.</span> (Eu trabalho de casa hoje)
+                                </span>
+                            </p>
+                            <p class="mt-4 text-white font-normal">
+                               **Explicação:** Para dizer que você trabalha em casa, a forma mais natural em inglês é **"I work from home"**. A expressão "do home office" é um anglicismo comum no Brasil e não é usada por falantes nativos de inglês nesse contexto.
+                            </p>
+                        </div>
+
+                        <!-- New info block for "work in..." -->
+                        <div class="info-block">
+                            <h3 class="text-2xl font-semibold mb-4 text-[#ffc700]">Como dizer que você trabalha em um lugar específico</h3>
+                            <p class="text-sm mb-4">
+                                Para dizer que você trabalha em um local físico, como um bairro, uma cidade ou um país, a preposição correta em inglês é **"in"**.
+                            </p>
+                            <p>
+                                **Exemplos:**
+                                <ul>
+                                    <li>
+                                        <span class="inline-flex items-center space-x-2">
+                                            <span class="play-button" onclick="playAudio('I work in Moema', this)"><i class="fas fa-play"></i></span>
+                                            <span class="text-sm">I work in Moema.</span> (Eu trabalho em Moema.)
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span class="inline-flex items-center space-x-2">
+                                            <span class="play-button" onclick="playAudio('I work in São Paulo', this)"><i class="fas fa-play"></i></span>
+                                            <span class="text-sm">I work in São Paulo.</span> (Eu trabalho em São Paulo.)
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span class="inline-flex items-center space-x-2">
+                                            <span class="play-button" onclick="playAudio('I work in Brazil', this)"><i class="fas fa-play"></i></span>
+                                            <span class="text-sm">I work in Brazil.</span> (Eu trabalho no Brasil.)
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span class="inline-flex items-center space-x-2">
+                                            <span class="play-button" onclick="playAudio('I work in London', this)"><i class="fas fa-play"></i></span>
+                                            <span class="text-sm">I work in London.</span> (Eu trabalho em Londres.)
+                                        </span>
+                                    </li>
+                                </ul>
+                            </p>
+                            <p class="mt-4 text-white font-normal">
+                               **Explicação:** O uso de **"in"** é apropriado para indicar que a sua atividade de trabalho se passa dentro dos limites de um local geográfico maior. É a forma mais comum e natural para se referir ao seu local de trabalho físico.
+                            </p>
+                        </div>
+
+                        <!-- New info block for "work with..." -->
+                        <div class="info-block">
+                            <h3 class="text-2xl font-semibold mb-4 text-[#ffc700]">Como dizer que você trabalha com...</h3>
+                            <p>
+                                **Exemplos:**
+                                <ul>
+                                    <li>
+                                        <span class="inline-flex items-center space-x-2">
+                                            <span class="play-button" onclick="playAudio('I work with Luccas', this)"><i class="fas fa-play"></i></span>
+                                            <span class="text-sm">I work with Luccas.</span> (Eu trabalho com Luccas.)
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span class="inline-flex items-center space-x-2">
+                                            <span class="play-button" onclick="playAudio('I work with plastic materials', this)"><i class="fas fa-play"></i></span>
+                                            <span class="text-sm">I work with plastic materials.</span> (Eu trabalho com materiais plásticos.)
+                                        </span>
+                                    </li>
+                                </ul>
+                            </p>
+                            <p class="mt-4 text-white font-normal">
+                                **Explicação:** A preposição **"with"** é usada para indicar que você trabalha em colaboração com uma pessoa ("I work with someone") ou que você utiliza um material ou objeto como parte do seu trabalho ("I work with something").
+                            </p>
+                        </div>
+
+                        <!-- New info block for "I am at work/home" -->
+                        <div class="info-block">
+                            <h3 class="text-2xl font-semibold mb-4 text-[#ffc700]">Como dizer onde você está agora</h3>
+                            <p>
+                                Para indicar a sua localização atual, use a preposição **"at"** para os termos "work" (trabalho) e "home" (casa).
+                            </p>
+                            <p>
+                                **Exemplos:**
+                                <ul>
+                                    <li>
+                                        <span class="inline-flex items-center space-x-2">
+                                            <span class="play-button" onclick="playAudio('I am at work', this)"><i class="fas fa-play"></i></span>
+                                            <span class="text-sm">I am at work.</span> (Eu estou no trabalho.)
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span class="inline-flex items-center space-x-2">
+                                            <span class="play-button" onclick="playAudio('I am at home', this)"><i class="fas fa-play"></i></span>
+                                            <span class="text-sm">I am at home.</span> (Eu estou em casa.)
+                                        </span>
+                                    </li>
+                                </ul>
+                            </p>
+                            <p class="mt-4 text-white font-normal">
+                               **Explicação:** Use a construção **"I am at..."** para expressar seu estado atual ou onde você está localizado. Isso é diferente de "I work at...", que indica o seu local de emprego.
+                            </p>
+                        </div>
+
+                        <!-- NEW INFO BLOCK FOR "OUT OF THE OFFICE" AND "AWAY" -->
+                        <div class="info-block">
+                            <h3 class="text-2xl font-semibold mb-4 text-[#ffc700]">Como dizer que você está fora do escritório</h3>
+                            <p>
+                                Para comunicar que você não está no escritório e não está disponível para trabalho, você pode usar as seguintes frases, que têm o mesmo significado:
+                            </p>
+                            <p>
+                                **Exemplos:**
+                                <ul>
+                                    <li>
+                                        <span class="inline-flex items-center space-x-2">
+                                            <span class="play-button" onclick="playAudio('I am out of the office', this)"><i class="fas fa-play"></i></span>
+                                            <span class="text-sm">I am out of the office.</span> (Eu estou fora do escritório.)
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span class="inline-flex items-center space-x-2">
+                                            <span class="play-button" onclick="playAudio('I am away', this)"><i class="fas fa-play"></i></span>
+                                            <span class="text-sm">I am away.</span> (Eu estou ausente/fora.)
+                                        </span>
+                                    </li>
+                                </ul>
+                            </p>
+                            <p class="mt-4 text-white font-normal">
+                               **Explicação:** As duas frases são usadas para indicar que você não está disponível para trabalhar, seja por férias, doença ou outro motivo. "I am out of the office" é mais formal e comum em emails automáticos, enquanto "I am away" é um pouco mais genérico e pode ser usado em contextos mais informais, mas com o mesmo sentido.
+                            </p>
+                        </div>
+
+                        <!-- NEW INFO BLOCK FOR "MATRIZ DA EMPRESA" -->
+                        <div class="info-block">
+                            <h3 class="text-2xl font-semibold mb-4 text-[#ffc700]">Como dizer a matriz da empresa em inglês</h3>
+                            <p class="text-sm mb-4">
+                                Para se referir à sede principal de uma empresa, as expressões mais comuns em inglês são **"headquarters"** e **"corporate headquarters"**.
+                            </p>
+                            <p>
+                                **Exemplos:**
+                                <ul>
+                                    <li>
+                                        <span class="inline-flex items-center space-x-2">
+                                            <span class="play-button" onclick="playAudio('Our headquarters are in São Paulo.', this)"><i class="fas fa-play"></i></span>
+                                            <span class="text-sm">Our headquarters are in São Paulo.</span> (Nossa matriz é em São Paulo.)
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span class="inline-flex items-center space-x-2">
+                                            <span class="play-button" onclick="playAudio('The company's corporate headquarters are located in New York.', this)"><i class="fas fa-play"></i></span>
+                                            <span class="text-sm">The company's corporate headquarters are located in New York.</span> (A matriz da empresa está localizada em Nova York.)
+                                        </span>
+                                    </li>
+                                </ul>
+                            </p>
+                            <p class="mt-4 text-white font-normal">
+                                **Explicação:** A palavra **"headquarters"** é um substantivo que, embora singular em conceito, é frequentemente tratado como plural em inglês, por isso usamos **"are"** com ele. Você também pode usar a versão completa, **"corporate headquarters"**, para ser mais formal.
+                            </p>
+                        </div>
+
+                        <!-- NEW INFO BLOCK FOR "SMALL/LARGE COMPANY" -->
+                        <div class="info-block">
+                            <h3 class="text-2xl font-semibold mb-4 text-[#ffc700]">Como dizer o tamanho da empresa</h3>
+                            <p>
+                                Para descrever o porte de uma empresa ou de uma planta, use as expressões:
+                            </p>
+                            <p>
+                                **Exemplos:**
+                                <ul>
+                                    <li>
+                                        <span class="inline-flex items-center space-x-2">
+                                            <span class="play-button" onclick="playAudio('I work in a small company.', this)"><i class="fas fa-play"></i></span>
+                                            <span class="text-sm">I work in a **small company**.</span> (Eu trabalho em uma empresa pequena.)
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span class="inline-flex items-center space-x-2">
+                                            <span class="play-button" onclick="playAudio('She works in a medium-sized company.', this)"><i class="fas fa-play"></i></span>
+                                            <span class="text-sm">She works in a **medium-sized company**.</span> (Ela trabalha em uma empresa de médio porte.)
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span class="inline-flex items-center space-x-2">
+                                            <span class="play-button" onclick="playAudio('He works for a large company.', this)"><i class="fas fa-play"></i></span>
+                                            <span class="text-sm">He works for a **large company**.</span> (Ele trabalha para uma grande empresa.)
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span class="inline-flex items-center space-x-2">
+                                            <span class="play-button" onclick="playAudio('I work in a plant.', this)"><i class="fas fa-play"></i></span>
+                                            <span class="text-sm">I work in a **plant**.</span> (Eu trabalho em uma planta/fábrica.)
+                                        </span>
+                                    </li>
+                                </ul>
+                            </p>
+                            <p class="mt-4 text-white font-normal">
+                                **Explicação:** A preposição **"in"** é usada para se referir ao tipo de empresa ou ao local físico. Use **"medium-sized"** com hífen. Para "grande empresa", você pode usar **"large company"** e **"work for"** para enfatizar que você é um funcionário daquela empresa, em vez de um local físico.
+                            </p>
+                        </div>
+
+                        <!-- NEW INFO BLOCK FOR "I AM WORKING ON..." -->
+                        <div class="info-block">
+                            <h3 class="text-2xl font-semibold mb-4 text-[#ffc700]">Como dizer no que você está trabalhando</h3>
+                            <p>
+                                A expressão <strong class="text-white">"I am working on..."</strong> é versátil e indica que você está ativamente envolvido em uma tarefa, projeto ou documento.
+                            </p>
+                            <p>
+                                **Exemplos:**
+                                <ul>
+                                    <li>
+                                        <span class="inline-flex items-center space-x-2">
+                                            <span class="play-button" onclick="playAudio('I am working on the report.', this)"><i class="fas fa-play"></i></span>
+                                            <span class="text-sm">I am working on the **report**.</span> (Eu estou trabalhando no relatório.)
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span class="inline-flex items-center space-x-2">
+                                            <span class="play-button" onclick="playAudio('I am working on the project.', this)"><i class="fas fa-play"></i></span>
+                                            <span class="text-sm">I am working on the **project**.</span> (Eu estou trabalhando no projeto.)
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span class="inline-flex items-center space-x-2">
+                                            <span class="play-button" onclick="playAudio('I am working on the analysis.', this)"><i class="fas fa-play"></i></span>
+                                            <span class="text-sm">I am working on the **analysis**.</span> (Eu estou trabalhando na análise.)
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span class="inline-flex items-center space-x-2">
+                                            <span class="play-button" onclick="playAudio('I am working on the profile.', this)"><i class="fas fa-play"></i></span>
+                                            <span class="text-sm">I am working on the **profile**.</span> (Eu estou trabalhando no perfil.)
+                                        </span>
+                                    </li>
+                                </ul>
+                            </p>
+                            <p class="mt-4 text-white font-normal">
+                                **Explicação:** A preposição **"on"** é usada para indicar que você está trabalhando *sobre* algo, como um projeto ou um documento específico. É uma maneira direta e profissional de descrever sua tarefa atual.
+                            </p>
+                        </div>
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                <!-- NEW INFO BLOCK FOR "I WORKED AT IT" -->
+                <div class="info-block">
+                    <h3 class="text-2xl font-semibold mb-4 text-[#ffc700]">Como dizer que você trabalhou para resolver algo</h3>
+                    <p>
+                        A frase <strong class="text-white">"I worked at it."</strong> é usada para indicar que você colocou esforço e se dedicou a uma tarefa, especialmente uma que pode ter sido desafiadora ou um problema.
+                    </p>
+                    <p>
+                        **Exemplos:**
+                        <ul>
+                            <li>
+                                <span class="inline-flex items-center space-x-2">
+                                    <span class="play-button" onclick="playAudio('The problem was hard, but I worked at it and fixed it.', this)"><i class="fas fa-play"></i></span>
+                                    <span class="text-sm">The problem was hard, but I worked at it and fixed it.</span> (O problema era difícil, mas eu trabalhei nele e o consertei.)
+                                </span>
+                            </li>
+                            <li>
+                                <span class="inline-flex items-center space-x-2">
+                                    <span class="play-button" onclick="playAudio('I had a difficult assignment, but I worked at it and finished on time.', this)"><i class="fas fa-play"></i></span>
+                                    <span class="text-sm">I had a difficult assignment, but I worked at it and finished on time.</span> (Eu tinha uma tarefa difícil, mas me dediquei a ela e terminei a tempo.)
+                                </span>
+                            </li>
+                        </ul>
+                    </p>
+                    <p class="mt-4 text-white font-normal">
+                        **Explicação:** O verbo **"work"** no passado, acompanhado de **"at it"**, transmite a ideia de que o trabalho exigiu esforço e persistência. O "it" se refere ao problema ou à tarefa que você está abordando. É uma forma concisa de dizer que você se esforçou para resolver algo.
+                    </p>
+                </div>
+            </div>
+
+                <!-- 2. Education: "My Background" -->
+                <div class="highlight-on-hover p-4 rounded-lg mb-8">
+                    <h3 class="text-2xl font-semibold mb-4 text-[#ffc700]">2. Education: "My Background"</h3>
+                    <div class="block-container">
+                        <p>
+                            <span class="inline-flex items-center space-x-2">
+                                <span class="play-button" onclick="playAudio('I graduated', this)"><i class="fas fa-play"></i></span>
+                                <span class="text-sm">I graduated</span> = Eu me formei
+                            </span><br>
+                            <span class="inline-flex items-center space-x-2">
+                                <span class="play-button" onclick="playAudio('I graduated in business', this)"><i class="fas fa-play"></i></span>
+                                <span class="text-sm">I graduated in Business</span> = Eu me formei em Administração
+                            </span><br>
+                            <span class="inline-flex items-center space-x-2">
+                                <span class="play-button" onclick="playAudio('I have a degree', this)"><i class="fas fa-play"></i></span>
+                                <span class="text-sm">I have a degree</span> = Eu tenho um diploma
+                            </span><br>
+                            <span class="inline-flex items-center space-x-2">
+                                <span class="play-button" onclick="playAudio('I have a degree in marketing', this)"><i class="fas fa-play"></i></span>
+                                <span class="text-sm">I have a degree in Marketing</span> = Eu tenho um diploma em Marketing
+                            </span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 3. Professional Duties: "What I Do" -->
+                <div class="highlight-on-hover p-4 rounded-lg mb-8">
+                    <h3 class="text-2xl font-semibold mb-4 text-[#ffc700]">3. Professional Duties: "What I Do"</h3>
+                    <div class="block-container">
+                        <p>
+                            <span class="inline-flex items-center space-x-2">
+                                <span class="play-button" onclick="playAudio('I manage', this)"><i class="fas fa-play"></i></span>
+                                <span class="text-sm">I manage</span> = Eu gerencio
+                            </span><br>
+                            <span class="inline-flex items-center space-x-2">
+                                <span class="play-button" onclick="playAudio('I manage multiple projects', this)"><i class="fas fa-play"></i></span>
+                                <span class="text-sm">I manage multiple projects</span> = Eu gerencio vários projetos
+                            </span><br>
+                            <span class="inline-flex items-center space-x-2">
+                                <span class="play-button" onclick="playAudio('I lead a team', this)"><i class="fas fa-play"></i></span>
+                                <span class="text-sm">I lead a team</span> = Eu lidero uma equipe
+                            </span><br>
+                            <span class="inline-flex items-center space-x-2">
+                                <span class="play-button" onclick="playAudio('I coordinate tasks', this)"><i class="fas fa-play"></i></span>
+                                <span class="text-sm">I coordinate tasks</span> = Eu coordeno tarefas
+                            </span><br>
+                            <span class="inline-flex items-center space-x-2">
+                                <span class="play-button" onclick="playAudio('I monitor deadlines', this)"><i class="fas fa-play"></i></span>
+                                <span class="text-sm">I monitor deadlines</span> = Eu monitoro prazos
+                            </span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 4. Reporting Problems: "This is the Problem" -->
+                <div class="highlight-on-hover p-4 rounded-lg mb-8">
+                    <h3 class="text-2xl font-semibold mb-4 text-[#ffc700]">4. Reporting Problems: "This is the Problem"</h3>
+                    <div class="block-container">
+                        <p>
+                            <span class="inline-flex items-center space-x-2">
+                                <span class="play-button" onclick="playAudio('There is a delay', this)"><i class="fas fa-play"></i></span>
+                                <span class="text-sm">There is a delay</span> = Há um atraso
+                            </span><br>
+                            <span class="inline-flex items-center space-x-2">
+                                <span class="play-button" onclick="playAudio('We are facing a challenge', this)"><i class="fas fa-play"></i></span>
+                                <span class="text-sm">We are facing a challenge</span> = Nós estamos enfrentando um desafio
+                            </span><br>
+                            <span class="inline-flex items-center space-x-2">
+                                <span class="play-button" onclick="playAudio('This is affecting our results', this)"><i class="fas fa-play"></i></span>
+                                <span class="text-sm">This is affecting our results</span> = Isso está afetando nossos resultados
+                            </span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 5. Proposing Solutions: "Here's How We Fix It" -->
+                <div class="highlight-on-hover p-4 rounded-lg mb-8">
+                    <h3 class="text-2xl font-semibold mb-4 text-[#ffc700]">5. Proposing Solutions: "Here's How We Fix It"</h3>
+                    <div class="block-container">
+                        <p>
+                            <span class="inline-flex items-center space-x-2">
+                                <span class="play-button" onclick="playAudio('One solution is', this)"><i class="fas fa-play"></i></span>
+                                <span class="text-sm">One solution is</span> = Uma solução é
+                            </span><br>
+                            <span class="inline-flex items-center space-x-2">
+                                <span class="play-button" onclick="playAudio('We could try a different approach', this)"><i class="fas fa-play"></i></span>
+                                <span class="text-sm">We could try a different approach</span> = Nós poderíamos tentar uma abordagem diferente
+                            </span><br>
+                            <span class="inline-flex items-center space-x-2">
+                                <span class="play-button" onclick="playAudio('Let us focus on cost reduction', this)"><i class="fas fa-play"></i></span>
+                                <span class="text-sm">Let's focus on cost reduction</span> = Vamos focar na redução de custos
+                            </span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 6. Negotiating: "Making Agreements" -->
+                <div class="highlight-on-hover p-4 rounded-lg mb-8">
+                    <h3 class="text-2xl font-semibold mb-4 text-[#ffc700]">6. Negotiating: "Making Agreements"</h3>
+                    <div class="block-container">
+                        <p>
+                            <span class="inline-flex items-center space-x-2">
+                                <span class="play-button" onclick="playAudio('We need to discuss', this)"><i class="fas fa-play"></i></span>
+                                <span class="text-sm">We need to discuss</span> = Nós precisamos discutir
+                            </span><br>
+                            <span class="inline-flex items-center space-x-2">
+                                <span class="play-button" onclick="playAudio('We need to discuss the terms', this)"><i class="fas fa-play"></i></span>
+                                <span class="text-sm">We need to discuss the terms</span> = Nós precisamos discutir os termos
+                            </span><br>
+                            <span class="inline-flex items-center space-x-2">
+                                <span class="play-button" onclick="playAudio('I want to negotiate', this)"><i class="fas fa-play"></i></span>
+                                <span class="text-sm">I want to negotiate</span> = Eu quero negociar
+                            </span><br>
+                            <span class="inline-flex items-center space-x-2">
+                                <span class="play-button" onclick="playAudio('Can we find a compromise?', this)"><i class="fas fa-play"></i></span>
+                                <span class="text-sm">Can we find a compromise?</span> = Podemos encontrar um compromisso?
+                            </span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 7. Giving Feedback: "Sharing Your Thoughts" -->
+                <div class="highlight-on-hover p-4 rounded-lg mb-8">
+                    <h3 class="text-2xl font-semibold mb-4 text-[#ffc700]">7. Giving Feedback: "Sharing Your Thoughts"</h3>
+                    <div class="block-container">
+                        <p>
+                            <span class="inline-flex items-center space-x-2">
+                                <span class="play-button" onclick="playAudio('I think your idea is great', this)"><i class="fas fa-play"></i></span>
+                                <span class="text-sm">I think your idea is great</span> = Eu acho que sua ideia é ótima
+                            </span><br>
+                            <span class="inline-flex items-center space-x-2">
+                                <span class="play-button" onclick="playAudio('My concern is', this)"><i class="fas fa-play"></i></span>
+                                <span class="text-sm">My concern is</span> = Minha preocupação é
+                            </span><br>
+                            <span class="inline-flex items-center space-x-2">
+                                <span class="play-button" onclick="playAudio('Could you explain more about that?', this)"><i class="fas fa-play"></i></span>
+                                <span class="text-sm">Could you explain more about that?</span> = Você poderia explicar mais sobre isso?
+                            </span>
+                        </p>
+                        </div>
+
+                <!-- Back to Top Button -->
+                <a href="#top" id="back-to-top" class="fixed bottom-8 right-8 bg-[#E50914] text-white p-4 rounded-full shadow-lg transition-transform duration-300 transform scale-100 hover:scale-110">
+                    <i class="fas fa-arrow-up"></i>
+                </a>
+
+        </main>
+
+        <script>
+            // API Configuration for TTS
+            const apiKey = ""; // Leave this as-is
+            const apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=" + apiKey;
+
+            /**
+             * Converts base64 to ArrayBuffer.
+             * @param {string} base64 The base64-encoded string.
+             * @returns {ArrayBuffer} The decoded ArrayBuffer.
+             */
+            const base64ToArrayBuffer = (base64) => {
+                const binaryString = atob(base64);
+                const len = binaryString.length;
+                const bytes = new Uint8Array(len);
+                for (let i = 0; i < len; i++) {
+                    bytes[i] = binaryString.charCodeAt(i);
+                }
+                return bytes.buffer;
+            };
+
+            /**
+             * Converts PCM data to a playable WAV Blob.
+             * @param {Int16Array} pcmData The PCM audio data.
+             * @param {number} sampleRate The sample rate of the audio.
+             * @returns {Blob} The WAV audio Blob.
+             */
+            const pcmToWav = (pcmData, sampleRate) => {
+                const numChannels = 1;
+                const bytesPerSample = 2;
+                const blockAlign = numChannels * bytesPerSample;
+                const byteRate = sampleRate * blockAlign;
+                const dataSize = pcmData.length * bytesPerSample;
+                const buffer = new ArrayBuffer(44 + dataSize);
+                const view = new DataView(buffer);
+
+                // RIFF header
+                writeString(view, 0, 'RIFF');
+                view.setUint32(4, 36 + dataSize, true);
+                writeString(view, 8, 'WAVE');
+
+                // fmt chunk
+                writeString(view, 12, 'fmt ');
+                view.setUint32(16, 16, true);
+                view.setUint16(20, 1, true); // format (1 = PCM)
+                view.setUint16(22, numChannels, true);
+                view.setUint32(24, sampleRate, true);
+                view.setUint32(28, byteRate, true);
+                view.setUint16(32, blockAlign, true);
+                view.setUint16(34, bytesPerSample * 8, true);
+
+                // data chunk
+                writeString(view, 36, 'data');
+                view.setUint32(40, dataSize, true);
+
+                // write PCM data
+                for (let i = 0; i < pcmData.length; i++) {
+                    view.setInt16(44 + i * 2, pcmData[i], true);
+                }
+
+                return new Blob([view], { type: 'audio/wav' });
+            };
+
+            /**
+             * Helper function to write a string to a DataView.
+             * @param {DataView} view The DataView object.
+             * @param {number} offset The offset to write at.
+             * @param {string} string The string to write.
+             */
+            const writeString = (view, offset, string) => {
+                for (let i = 0; i < string.length; i++) {
+                    view.setUint8(offset + i, string.charCodeAt(i));
+                }
+            };
+
+            // Function to make the TTS API call
+            const playAudio = async (text, button) => {
+                let retryCount = 0;
+                const maxRetries = 3;
+                const baseDelay = 1000;
+
+                const spinner = document.createElement('div');
+                spinner.className = 'spinner';
+                const originalIcon = button.querySelector('i');
+
+                // Hide the original icon, show spinner
+                if (originalIcon) originalIcon.style.display = 'none';
+                button.appendChild(spinner);
+                button.disabled = true;
+
+                const fetchAudio = async () => {
+                    try {
+                        const payload = {
+                            contents: [{
+                                parts: [{ text: text }]
+                            }],
+                            generationConfig: {
+                                responseModality: "AUDIO",
+                                speechConfig: {
+                                    voiceConfig: {
+                                        prebuiltVoiceConfig: { voiceName: "Iapetus" }
+                                    }
+                                },
+                            },
+                            model: "gemini-2.5-flash-preview-tts"
+                        };
+
+                        const response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+
+                        if (!response.ok) {
+                            if (response.status === 429 && retryCount < maxRetries) {
+                                const delay = baseDelay * Math.pow(2, retryCount);
+                                retryCount++;
+                                await new Promise(res => setTimeout(res, delay));
+                                return fetchAudio();
+                            }
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+
+                        const result = await response.json();
+                        const audioData = result?.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+                        const mimeType = result?.candidates?.[0]?.content?.parts?.[0]?.inlineData?.mimeType;
+
+                        if (audioData && mimeType && mimeType.startsWith("audio/")) {
+                            const sampleRateMatch = mimeType.match(/rate=(\d+)/);
+                            const sampleRate = sampleRateMatch ? parseInt(sampleRateMatch[1], 10) : 16000;
+                            const pcmData = base64ToArrayBuffer(audioData);
+                            const pcm16 = new Int16Array(pcmData);
+                            const wavBlob = pcmToWav(pcm16, sampleRate);
+                            const audioUrl = URL.createObjectURL(wavBlob);
+                            const audio = new Audio(audioUrl);
+                            audio.play();
+
+                            audio.addEventListener('ended', () => {
+                                URL.revokeObjectURL(audioUrl);
+                                if (button.contains(spinner)) button.removeChild(spinner);
+                                if (originalIcon) originalIcon.style.display = 'inline-block';
+                                button.disabled = false;
+                            });
+                        } else {
+                            throw new Error("Invalid audio data received.");
+                        }
+
+                    } catch (error) {
+                        console.error('TTS API error:', error);
+                        const errorMessage = document.createElement('div');
+                        errorMessage.textContent = 'Error playing audio. Please try again.';
+                        errorMessage.style.cssText = `
+                            position: fixed;
+                            top: 50%;
+                            left: 50%;
+                            transform: translate(-50%, -50%);
+                            background-color: #E50914;
+                            color: white;
+                            padding: 1rem 2rem;
+                            border-radius: 8px;
+                            z-index: 1000;
+                        `;
+                        document.body.appendChild(errorMessage);
+                        setTimeout(() => {
+                            document.body.removeChild(errorMessage);
+                        }, 3000);
+                        if (button.contains(spinner)) button.removeChild(spinner);
+                        if (originalIcon) originalIcon.style.display = 'inline-block';
+                        button.disabled = false;
+                    }
+                };
+
+                fetchAudio();
+            };
+
+            // Function to check exercise answers
+            function checkAnswer(event, inputId, correctAnswer, synonyms = []) {
+                event.preventDefault();
+                const inputElement = document.getElementById(inputId);
+                const feedbackElement = document.getElementById(inputId.replace('-exercise', '-feedback'));
+                
+                const userResponse = inputElement.value.trim().toLowerCase();
+                const correctResponse = correctAnswer.toLowerCase();
+                const normalizedSynonyms = synonyms.map(s => s.toLowerCase());
+
+                if (userResponse === correctResponse || normalizedSynonyms.includes(userResponse)) {
+                    feedbackElement.textContent = "Correto! ✅";
+                    feedbackElement.className = 'feedback-message correct';
+                } else {
+                    feedbackElement.textContent = `Incorreto. Tente novamente! A resposta esperada é: "${correctAnswer}".`;
+                    feedbackElement.className = 'feedback-message incorrect';
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                // FAQ Toggle Functionality
+                const faqQuestions = document.querySelectorAll('.faq-question');
+                faqQuestions.forEach(question => {
+                    question.addEventListener('click', () => {
+                        const answer = question.nextElementSibling;
+                        const icon = question.querySelector('.faq-question-icon');
+                        
+                        if (answer.classList.contains('show')) {
+                            answer.classList.remove('show');
+                            question.classList.remove('active');
+                        } else {
+                            // Close other open answers
+                            document.querySelectorAll('.faq-answer.show').forEach(openAnswer => {
+                                openAnswer.classList.remove('show');
+                                openAnswer.previousElementSibling.classList.remove('active');
+                            });
+                            answer.classList.add('show');
+                            question.classList.add('active');
+                        }
+                    });
+                });
+            });
+        </script>
+
+</body>
+</html>
